@@ -6,14 +6,14 @@
 //  Copyright © 2019 Alexis Bourget. All rights reserved.
 //
 
-enum Status: String, CaseIterable, Equatable {
+public enum Status: String, CaseIterable, Equatable {
   case complete = "Complete"
   case inProgress = "In Progress"
   case abandonned = "Abandonned"
 }
 
 extension Status: CustomStringConvertible {
-  var description: String {
+  public var description: String {
     rawValue
   }
 }
