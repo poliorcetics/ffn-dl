@@ -52,11 +52,11 @@ extension Chapter {
     public let findTitle: (Document) -> String?
 
     /// Used to find the content in a given document.
-    public let findContent: (Body) -> String?
+    public let findContent: (Document) -> String?
 
     public init(findURL: @escaping (Document) -> URL?,
                 findTitle: @escaping (Document) -> String?,
-                findContent: @escaping (Body) -> String?) {
+                findContent: @escaping (Document) -> String?) {
       self.findURL = findURL
       self.findTitle = findTitle
       self.findContent = findContent
@@ -84,11 +84,10 @@ extension Chapter {
   ///   - finder: `Chapter.Finder` to use to obtain the chapter's data.
   public convenience init?(from doc: Document, withFinder finder: Chapter.Finder) {
     guard let canonicalURL = finder.findURL(doc),
-      let title = finder.findTitle(doc),
-      let body = doc.body,
-      let content = finder.findContent(body)
-      else {
-        return nil
+          let title = finder.findTitle(doc),
+          let content = finder.findContent(doc)
+    else {
+      return nil
     }
     self.init(url: canonicalURL, title: title, content: content, lastUpdate: Date(), finder: finder)
   }
