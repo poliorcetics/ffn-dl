@@ -9,18 +9,18 @@
 import Foundation
 
 /// A chapter inside a story.
-public final class Chapter {
+public struct Chapter {
   /// URL of the chapter, should be as precise as possible.
-  public private(set) var url: URL
+  public let url: URL
 
   /// Title of the chapter.
-  public private(set) var title: String
+  public let title: String
 
   /// Content of the chapter: the main text.
-  public private(set) var content: String
+  public let content: String
 
   /// When the chapter was last updated **by the program** (not on the website).
-  public private(set) var lastUpdate: Date
+  public let lastUpdate: Date
 
   private let finder: Chapter.Finder
 
@@ -80,7 +80,7 @@ public extension Chapter {
   /// - Parameters:
   ///   - url: `URL` to use to get the chapter.
   ///   - finder: `Chapter.Finder` to use to obtain the chapter's data.
-  convenience init?(from url: URL, withFinder finder: Chapter.Finder) {
+  init?(from url: URL, withFinder finder: Chapter.Finder) {
     guard let doc = url.getDocument() else {
       return nil
     }
@@ -91,7 +91,7 @@ public extension Chapter {
   /// - Parameters:
   ///   - doc: `Document` in which to find the chapter.
   ///   - finder: `Chapter.Finder` to use to obtain the chapter's data.
-  convenience init?(from doc: Document, withFinder finder: Chapter.Finder) {
+  init?(from doc: Document, withFinder finder: Chapter.Finder) {
     guard let canonicalURL = finder.findURL(doc),
           let title = finder.findTitle(doc),
           let content = finder.findContent(doc)
@@ -100,7 +100,9 @@ public extension Chapter {
     }
     self.init(url: canonicalURL, title: title, content: content, lastUpdate: Date(), finder: finder)
   }
+}
 
+public extension Chapter {
   // MARK: - Updating
 
   /// Attempts to update `self`, returning an `UpdateResult` indicating how the operation
@@ -108,17 +110,14 @@ public extension Chapter {
   ///
   /// - Note: In case of failure, the message is considered an implementation details.
   /// - Note: A chapter is considered to have changed if and only if it's **title** or **content** have changed. The update date and url are ignored for this.
-  func update() -> UpdateResult {
+  mutating func update() -> UpdateResult {
     guard let updatedChapter = Chapter(from: url, withFinder: finder) else {
       return .failure("Failed to update the chapter from '\(url.absoluteString)'")
     }
 
     // The URL should not have changed, and the update date should have changed
     let chapterChanged = title != updatedChapter.title || content != updatedChapter.content
-    url = updatedChapter.url
-    title = updatedChapter.title
-    content = updatedChapter.content
-    lastUpdate = updatedChapter.lastUpdate
+    self = updatedChapter
     return chapterChanged ? .success : .unchanged
   }
 }

@@ -74,7 +74,7 @@ final class ChapterTests: XCTestCase {
   }
 
   func testUpdateReturnsUnchangedWhenURLOrDateChanges() {
-    let res = Chapter(
+    var res = Chapter(
       url: singleChapterURL,
       title: expectedTitle,
       content: expectedContent,
@@ -93,7 +93,7 @@ final class ChapterTests: XCTestCase {
   }
 
   func testUpdateReturnsSuccessWhenTitleChanges() {
-    let res = Chapter(
+    var res = Chapter(
       url: singleChapterURL,
       title: expectedTitle + "AddOn",
       content: expectedContent,
@@ -112,7 +112,7 @@ final class ChapterTests: XCTestCase {
   }
 
   func testUpdateReturnsSuccessWhenContentChanges() {
-    let res = Chapter(
+    var res = Chapter(
       url: singleChapterURL,
       title: expectedTitle,
       content: expectedContent + "AddOn",
@@ -154,7 +154,7 @@ final class ChapterTests: XCTestCase {
   }
 
   func testUpdateReturnsFailureWithCorrectMessageWhenFoundURLIsNil() {
-    let res = Chapter(
+    var res = Chapter(
       url: expectedURL,
       title: expectedTitle,
       content: expectedContent,
@@ -183,7 +183,7 @@ final class ChapterTests: XCTestCase {
   }
 
   func testUpdateReturnsFailureWithCorrectMessageWhenFoundTitleIsNil() {
-    let res = Chapter(
+    var res = Chapter(
       url: expectedURL,
       title: expectedTitle,
       content: expectedContent,
@@ -212,7 +212,7 @@ final class ChapterTests: XCTestCase {
   }
 
   func testUpdateReturnsFailureWithCorrectMessageWhenFoundContentIsNil() {
-    let res = Chapter(
+    var res = Chapter(
       url: expectedURL,
       title: expectedTitle,
       content: expectedContent,
