@@ -10,6 +10,9 @@ import Foundation
 import SwiftSoup
 
 /// A non-specific HTML Component.
+///
+/// This type exist to be an interface between the HTML parsing code and the ffn-dl code,
+/// allowing behind-the-scene changes.
 public class Component {
   private let elem: Element
   
