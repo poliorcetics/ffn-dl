@@ -57,9 +57,7 @@ final class AuthorTests: XCTestCase {
   }
 
   func testSuccessfulAuthorDescription() {
-    let url = URL(fileURLWithPath: "\(pathToTestDir)/multiChapterFic.html")
-
-    let author = Author(from: url, withFinder: successfulFinder)!
+    let author = Author(from: singleChapterURL, withFinder: successfulFinder)!
 
     let desc = "Vimesenthusiast - https://www.fanfiction.net/u/4785338/Vimesenthusiast"
     XCTAssertEqual("\(author)", desc)
@@ -100,8 +98,8 @@ final class AuthorTests: XCTestCase {
   // MARK: Invalid URL
 
   func testInitFromInvalidURLReturnsNils() {
-    let url = URL(fileURLWithPath: "/")
-    let res = Author(from: url, withFinder: successfulFinder)
+    let invalidURL = URL(fileURLWithPath: "/")
+    let res = Author(from: invalidURL, withFinder: successfulFinder)
 
     XCTAssertNil(res)
   }
