@@ -10,81 +10,153 @@
 import XCTest
 @testable import ffn_dl
 
-final class UniverseTests: XCTestCase {
+final class NonCrossoverUniverseTests: XCTestCase {
+  // MARK: Non-Crossover Expected Values
 
-  // This fic is a crossover with the url:
-  // https://www.fanfiction.net/Harry-Potter_and_Marvel_Crossovers/224/357/
-  // Harry Potter + Marvel Crossover
+  /// This fic **is** a crossover with the url:
+  /// - https://www.fanfiction.net/Harry-Potter_and_Marvel_Crossovers/224/357/
+  /// - Harry Potter + Marvel Crossover
   let multiChapterURL = URL(fileURLWithPath: "\(pathToTestDir)/multiChapterFic.html")
 
-  let nonCrossoverURL = URL(string: "https://www.fanfiction.net/book/Harry-Potter/")!
-  let nonCrossoverName = "Harry Potter"
-  let nonCrossoverIsCrossover = false
+  let expectedURL = URL(string: "https://www.fanfiction.net/book/Harry-Potter/")!
+  let expectedName = "Harry Potter"
+  let expectedIsCrossover = false
 
-  lazy var nonCrossoverFinder = Universe.Finder(
-    findURL: { _ in self.nonCrossoverURL },
-    findName: { _ in self.nonCrossoverName },
-    findCrossover: { _ in self.nonCrossoverIsCrossover }
-  )
+  // MARK: Finders
 
-  func testSuccessfulUniverseNonCrossoverFromURL() {
-    let res = Universe(from: multiChapterURL, withFinder: nonCrossoverFinder)!
-
-    XCTAssertEqual(res.url, nonCrossoverURL)
-    XCTAssertEqual(res.name, nonCrossoverName)
-    XCTAssertFalse(res.isCrossover)
-  }
-
-  func testSuccessfulUniverseNonCrossoverFromDoc() {
-    let doc = multiChapterURL.getDocument()!
-
-    let res = Universe(from: doc, withFinder: nonCrossoverFinder)!
-
-    XCTAssertEqual(res.url, nonCrossoverURL)
-    XCTAssertEqual(res.name, nonCrossoverName)
-    XCTAssertFalse(res.isCrossover)
-  }
-
-  func testSuccessfulUniverseDescription() {
-    let url = URL(fileURLWithPath: "\(pathToTestDir)/multiChapterFic.html")
-
-    let res = Universe(from: url, withFinder: nonCrossoverFinder)!
-
-    let desc = "Harry Potter - https://www.fanfiction.net/book/Harry-Potter/"
-    XCTAssertEqual("\(res)", desc)
-  }
-}
-
-// MARK: - SuccessfulUniCrossoverTests
-
-final class SuccessfulUniCrossoverTests: XCTestCase {
-  // This fic is not a crossover with the url:
-  // https://www.fanfiction.net/book/Harry-Potter/
-  // Harry Potter
-  let url = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
-
-  let expectedURL = URL(string: "https://www.fanfiction.net/Harry-Potter_and_Marvel_Crossovers/224/357/")!
-  let expectedName = "Harry Potter + Marvel Crossover"
-  let expectedIsCrossover = true
-
-  lazy var finder = Universe.Finder(
+  lazy var successfulFinder = Universe.Finder(
     findURL: { _ in self.expectedURL },
     findName: { _ in self.expectedName },
     findCrossover: { _ in self.expectedIsCrossover }
   )
 
-  func testSuccessfulUniverseNonCrossoverFromURL() {
-    let res = Universe(from: url, withFinder: finder)!
+  lazy var nilURLFinder = Universe.Finder(
+    findURL: { _ in nil },
+    findName: { _ in self.expectedName },
+    findCrossover: { _ in self.expectedIsCrossover }
+  )
+
+  lazy var nilNameFinder = Universe.Finder(
+    findURL: { _ in self.expectedURL },
+    findName: { _ in nil },
+    findCrossover: { _ in self.expectedIsCrossover }
+  )
+
+  // MARK: Non-crossover success case tests
+
+  func testSuccessfulInitFromURL() {
+    let res = Universe(from: multiChapterURL, withFinder: successfulFinder)!
+
+    XCTAssertEqual(res.url, expectedURL)
+    XCTAssertEqual(res.name, expectedName)
+    XCTAssertFalse(res.isCrossover)
+  }
+
+  func testSuccessfulInitFromDocument() {
+    let doc = multiChapterURL.getDocument()!
+
+    let res = Universe(from: doc, withFinder: successfulFinder)!
+
+    XCTAssertEqual(res.url, expectedURL)
+    XCTAssertEqual(res.name, expectedName)
+    XCTAssertFalse(res.isCrossover)
+  }
+
+  func testSuccessfulUniverseDescription() {
+    let res = Universe(from: multiChapterURL, withFinder: successfulFinder)!
+
+    let desc = "Harry Potter - https://www.fanfiction.net/book/Harry-Potter/"
+    XCTAssertEqual("\(res)", desc)
+  }
+
+  // MARK: Found nil url tests
+
+  func testInitFromURLWhenFoundURLIsNilReturnsNil() {
+    let res = Universe(from: multiChapterURL, withFinder: nilURLFinder)
+
+    XCTAssertNil(res)
+  }
+
+  func testInitFromDocumentWhenFoundURLIsNilReturnsNil() {
+    let doc = multiChapterURL.getDocument()!
+
+    let res = Universe(from: doc, withFinder: nilURLFinder)
+
+    XCTAssertNil(res)
+  }
+
+  // MARK: Found nil name tests
+
+  func testInitFromURLWhenNameIsNilReturnsNil() {
+    let res = Universe(from: multiChapterURL, withFinder: nilNameFinder)
+
+    XCTAssertNil(res)
+  }
+
+  func testInitFromDocumentWhenNameIsNilReturnsNil() {
+    let doc = multiChapterURL.getDocument()!
+
+    let res = Universe(from: doc, withFinder: nilNameFinder)
+
+    XCTAssertNil(res)
+  }
+
+  // MARK: Invalid URL
+
+  func testInitFromInvalidURLReturnsNils() {
+    let invalidURL = URL(fileURLWithPath: "/")
+    let res = Universe(from: invalidURL, withFinder: successfulFinder)
+
+    XCTAssertNil(res)
+  }
+}
+
+final class CrossoverUniverseTests: XCTestCase {
+  // MARK: Crossover Expected Values
+
+  /// This fic is **not** a crossover with the url:
+  /// - https://www.fanfiction.net/book/Harry-Potter/
+  /// - Harry Potter
+  let singleChapterURL = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
+
+  let expectedURL = URL(string: "https://www.fanfiction.net/Harry-Potter_and_Marvel_Crossovers/224/357/")!
+  let expectedName = "Harry Potter + Marvel Crossover"
+  let expectedIsCrossover = true
+
+  // MARK: Finders
+
+  lazy var successfulFinder = Universe.Finder(
+    findURL: { _ in self.expectedURL },
+    findName: { _ in self.expectedName },
+    findCrossover: { _ in self.expectedIsCrossover }
+  )
+
+  lazy var nilURLFinder = Universe.Finder(
+    findURL: { _ in nil },
+    findName: { _ in self.expectedName },
+    findCrossover: { _ in self.expectedIsCrossover }
+  )
+
+  lazy var nilNameFinder = Universe.Finder(
+    findURL: { _ in self.expectedURL },
+    findName: { _ in nil },
+    findCrossover: { _ in self.expectedIsCrossover }
+  )
+
+  // MARK: Crossover success case tests
+
+  func testSuccessfulInitFromURL() {
+    let res = Universe(from: singleChapterURL, withFinder: successfulFinder)!
 
     XCTAssertEqual(res.url, expectedURL)
     XCTAssertEqual(res.name, expectedName)
     XCTAssertTrue(res.isCrossover)
   }
 
-  func testSuccessfulUniverseNonCrossoverFromDoc() {
-    let doc = url.getDocument()!
+  func testSuccessfulInitFromDocument() {
+    let doc = singleChapterURL.getDocument()!
 
-    let res = Universe(from: doc, withFinder: finder)!
+    let res = Universe(from: doc, withFinder: successfulFinder)!
 
     XCTAssertEqual(res.url, expectedURL)
     XCTAssertEqual(res.name, expectedName)
@@ -92,80 +164,49 @@ final class SuccessfulUniCrossoverTests: XCTestCase {
   }
 
   func testSuccessfulUniverseDescription() {
-    let url = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
-
-    let res = Universe(from: url, withFinder: finder)!
+    let res = Universe(from: singleChapterURL, withFinder: successfulFinder)!
 
     let desc = "Harry Potter + Marvel Crossover - https://www.fanfiction.net/Harry-Potter_and_Marvel_Crossovers/224/357/"
     XCTAssertEqual("\(res)", desc)
   }
-}
 
-// MARK: - SuccessfulUniCrossoverTests
+  // MARK: Found nil url tests
 
-final class FailingOnURLUniTests: XCTestCase {
-  let url = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
-
-  let finder = Universe.Finder(
-    findURL: { _ in nil },
-    findName: { _ in "Harry Potter + Marvel Crossover" },
-    findCrossover: { _ in true }
-  )
-
-  func testSuccessfulUniverseNonCrossoverFromURL() {
-    let res = Universe(from: url, withFinder: finder)
+  func testInitFromURLWhenFoundURLIsNilReturnsNil() {
+    let res = Universe(from: singleChapterURL, withFinder: nilURLFinder)
 
     XCTAssertNil(res)
   }
 
-  func testSuccessfulUniverseNonCrossoverFromDoc() {
-    let doc = url.getDocument()!
+  func testInitFromDocumentWhenFoundURLIsNilReturnsNil() {
+    let doc = singleChapterURL.getDocument()!
 
-    let res = Universe(from: doc, withFinder: finder)
-
-    XCTAssertNil(res)
-  }
-}
-
-// MARK: - SuccessfulUniCrossoverTests
-
-final class FailingOnNameUniTests: XCTestCase {
-  let url = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
-
-  let finder = Universe.Finder(
-    findURL: { _ in URL(string: "https://www.fanfiction.net/Harry-Potter_and_Marvel_Crossovers/224/357/") },
-    findName: { _ in nil },
-    findCrossover: { _ in true }
-  )
-
-  func testSuccessfulUniverseNonCrossoverFromURL() {
-    let res = Universe(from: url, withFinder: finder)
+    let res = Universe(from: doc, withFinder: nilURLFinder)
 
     XCTAssertNil(res)
   }
 
-  func testSuccessfulUniverseNonCrossoverFromDoc() {
-    let doc = url.getDocument()!
+  // MARK: Found nil name tests
 
-    let res = Universe(from: doc, withFinder: finder)
+  func testInitFromURLWhenNameIsNilReturnsNil() {
+    let res = Universe(from: singleChapterURL, withFinder: nilNameFinder)
 
     XCTAssertNil(res)
   }
-}
 
-// MARK: - InvalidUrlUniverseTests
+  func testInitFromDocumentWhenNameIsNilReturnsNil() {
+    let doc = singleChapterURL.getDocument()!
 
-final class InvalidUrlUniverseTests: XCTestCase {
-  let url = URL(fileURLWithPath: "/")
+    let res = Universe(from: doc, withFinder: nilNameFinder)
 
-  let finder = Universe.Finder(
-    findURL: { _ in URL(string: "https://www.fanfiction.net/Harry-Potter_and_Marvel_Crossovers/224/357/") },
-    findName: { _ in nil },
-    findCrossover: { _ in true }
-  )
+    XCTAssertNil(res)
+  }
 
-  func testFailingInitFromURL() {
-    let res = Universe(from: url, withFinder: finder)
+  // MARK: Invalid URL
+
+  func testInitFromInvalidURLReturnsNils() {
+    let invalidURL = URL(fileURLWithPath: "/")
+    let res = Universe(from: invalidURL, withFinder: successfulFinder)
 
     XCTAssertNil(res)
   }
