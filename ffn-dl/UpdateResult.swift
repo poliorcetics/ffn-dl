@@ -6,6 +6,9 @@
 //  Copyright © 2019 Alexis Bourget. All rights reserved.
 //
 
+/// Result of an update on a story or chapter.
+///
+/// The `.failure` case has an associated `String` that is intended to be the error message.
 public enum UpdateResult: Equatable {
   case unchanged
   case success
@@ -13,6 +16,7 @@ public enum UpdateResult: Equatable {
 }
 
 extension UpdateResult {
+  /// `true` is `self` is `.failure`, else `false`
   public var isFailure: Bool {
     switch self {
     case .failure(_): return true

@@ -9,7 +9,7 @@
 import Foundation
 import SwiftSoup
 
-/// A Body HTML Component
+/// A Body HTML Component.
 /// HTML Tag: `<body>`
 public final class Body: Component {
   internal init(body: Element) {

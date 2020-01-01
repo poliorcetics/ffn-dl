@@ -9,7 +9,7 @@
 import Foundation
 import SwiftSoup
 
-/// A HTML Document
+/// A HTML Document.
 /// HTML Tag: `<html>`
 ///
 /// Create one using the `parse(html:)` function.

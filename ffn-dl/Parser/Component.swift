@@ -9,7 +9,7 @@
 import Foundation
 import SwiftSoup
 
-/// A non-specific HTML Component
+/// A non-specific HTML Component.
 public class Component {
   private let elem: Element
   

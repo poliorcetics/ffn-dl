@@ -6,6 +6,7 @@
 //  Copyright © 2019 Alexis Bourget. All rights reserved.
 //
 
+/// Status of a fanfiction, indicating whether it is complete, in progress or abandonned.
 public enum Status: String, CaseIterable, Equatable {
   case complete = "Complete"
   case inProgress = "In Progress"
