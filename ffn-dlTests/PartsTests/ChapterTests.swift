@@ -5,223 +5,231 @@
 //  Created by Alexis Bourget on 2020-01-01.
 //  Copyright © 2020 Alexis Bourget. All rights reserved.
 //
+// This file only tests the default implementations.
 
 import XCTest
 @testable import ffn_dl
 
-// This file only tests the default implementations
+final class ChapterTests: XCTestCase {
+  // MARK: Expected Values
 
-// This fic has a chapter with the url:
-// https://www.fanfiction.net/u/1122504/RuneWitchSakura
-// Harry's Little Army of Psychos
-fileprivate let singleChapterURL = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
-fileprivate let singleChapterDoc = singleChapterURL.getDocument()!
+  // This fic has a chapter with the url:
+  // https://www.fanfiction.net/s/4951074/1/Harry-s-Little-Army-of-Psychos
+  // Harry's Little Army of Psychos
+  let singleChapterURL = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
 
-// MARK: - SuccessfulChapterTests
-
-final class SuccessfulChapterTests: XCTestCase {
   let expectedURL = URL(string: "https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future")!
   let expectedTitle = "1. A Stranger in an even Stranger Land"
   let expectedContent = "Chapter content"
 
-  lazy var finder = Chapter.Finder(findURL: { _ in self.expectedURL },
-                                   findTitle: { _ in self.expectedTitle },
-                                   findContent: { _ in self.expectedContent })
+  // MARK: Finders
+
+  lazy var successfulFinder = Chapter.Finder(
+    findURL: { _ in self.expectedURL },
+    findTitle: { _ in self.expectedTitle },
+    findContent: { _ in self.expectedContent }
+  )
+
+  lazy var nilURLFinder = Chapter.Finder(
+    findURL: { _ in nil },
+    findTitle: { _ in self.expectedTitle },
+    findContent: { _ in self.expectedContent }
+  )
+
+  lazy var nilTitleFinder = Chapter.Finder(
+    findURL: { _ in self.expectedURL },
+    findTitle: { _ in nil },
+    findContent: { _ in self.expectedContent }
+  )
+
+  lazy var nilContentFinder = Chapter.Finder(
+    findURL: { _ in self.expectedURL },
+    findTitle: { _ in self.expectedTitle },
+    findContent: { _ in nil }
+  )
+
+  // MARK: Success case tests
 
   func testSuccessfulInitFromURL() {
-    let chapter = Chapter(from: singleChapterURL, withFinder: finder)!
+    let res = Chapter(from: singleChapterURL, withFinder: successfulFinder)!
 
-    let dateIsWithinRange = abs(Date().timeIntervalSince(chapter.lastUpdate)) < 5
+    let dateIsWithinRange = abs(Date().timeIntervalSince(res.lastUpdate)) < 5
 
-    XCTAssertEqual(chapter.url, expectedURL)
-    XCTAssertEqual(chapter.title, expectedTitle)
-    XCTAssertEqual(chapter.content, expectedContent)
+    XCTAssertEqual(res.url, expectedURL)
+    XCTAssertEqual(res.title, expectedTitle)
+    XCTAssertEqual(res.content, expectedContent)
     XCTAssertTrue(dateIsWithinRange)
   }
 
   func testSuccessfulInitFromDocument() {
-    let chapter = Chapter(from: singleChapterDoc, withFinder: finder)!
+    let doc = singleChapterURL.getDocument()!
+    let res = Chapter(from: doc, withFinder: successfulFinder)!
 
-    let dateIsWithinRange = abs(Date().timeIntervalSince(chapter.lastUpdate)) < 5
+    let dateIsWithinRange = abs(Date().timeIntervalSince(res.lastUpdate)) < 5
 
-    XCTAssertEqual(chapter.url, expectedURL)
-    XCTAssertEqual(chapter.title, expectedTitle)
-    XCTAssertEqual(chapter.content, expectedContent)
+    XCTAssertEqual(res.url, expectedURL)
+    XCTAssertEqual(res.title, expectedTitle)
+    XCTAssertEqual(res.content, expectedContent)
     XCTAssertTrue(dateIsWithinRange)
   }
 
   func testUpdateReturnsUnchangedWhenURLOrDateChanges() {
-    let chapter = Chapter(
+    let res = Chapter(
       url: singleChapterURL,
       title: expectedTitle,
       content: expectedContent,
       lastUpdate: Date(),
-      finder: finder)
+      finder: successfulFinder
+    )
 
-    let oldDate = chapter.lastUpdate
+    let oldDate = res.lastUpdate
 
     // The url and date will have changed but are ignored
-    XCTAssertEqual(chapter.update(), UpdateResult.unchanged)
-    XCTAssertEqual(chapter.url, expectedURL)
-    XCTAssertEqual(chapter.title, expectedTitle)
-    XCTAssertEqual(chapter.content, expectedContent)
-    XCTAssertGreaterThan(chapter.lastUpdate, oldDate)
+    XCTAssertEqual(res.update(), UpdateResult.unchanged)
+    XCTAssertEqual(res.url, expectedURL)
+    XCTAssertEqual(res.title, expectedTitle)
+    XCTAssertEqual(res.content, expectedContent)
+    XCTAssertGreaterThan(res.lastUpdate, oldDate)
   }
 
   func testUpdateReturnsSuccessWhenTitleChanges() {
-    let chapter = Chapter(
+    let res = Chapter(
       url: singleChapterURL,
       title: expectedTitle + "AddOn",
       content: expectedContent,
       lastUpdate: Date(),
-      finder: finder)
+      finder: successfulFinder
+    )
 
-    let oldDate = chapter.lastUpdate
+    let oldDate = res.lastUpdate
 
     // The title will have changed
-    XCTAssertEqual(chapter.update(), UpdateResult.success)
-    XCTAssertEqual(chapter.url, expectedURL)
-    XCTAssertEqual(chapter.title, expectedTitle)
-    XCTAssertEqual(chapter.content, expectedContent)
-    XCTAssertGreaterThan(chapter.lastUpdate, oldDate)
+    XCTAssertEqual(res.update(), UpdateResult.success)
+    XCTAssertEqual(res.url, expectedURL)
+    XCTAssertEqual(res.title, expectedTitle)
+    XCTAssertEqual(res.content, expectedContent)
+    XCTAssertGreaterThan(res.lastUpdate, oldDate)
   }
 
   func testUpdateReturnsSuccessWhenContentChanges() {
-    let chapter = Chapter(
+    let res = Chapter(
       url: singleChapterURL,
       title: expectedTitle,
       content: expectedContent + "AddOn",
       lastUpdate: Date(),
-      finder: finder)
+      finder: successfulFinder
+    )
 
-    let oldDate = chapter.lastUpdate
+    let oldDate = res.lastUpdate
 
     // The content will have changed
-    XCTAssertEqual(chapter.update(), UpdateResult.success)
-    XCTAssertEqual(chapter.url, expectedURL)
-    XCTAssertEqual(chapter.title, expectedTitle)
-    XCTAssertEqual(chapter.content, expectedContent)
-    XCTAssertGreaterThan(chapter.lastUpdate, oldDate)
+    XCTAssertEqual(res.update(), UpdateResult.success)
+    XCTAssertEqual(res.url, expectedURL)
+    XCTAssertEqual(res.title, expectedTitle)
+    XCTAssertEqual(res.content, expectedContent)
+    XCTAssertGreaterThan(res.lastUpdate, oldDate)
   }
 
   func testSuccessfulChapterDescription() {
-    let url = URL(fileURLWithPath: "\(pathToTestDir)/multiChapterFic.html")
+    let res = Chapter(from: singleChapterURL, withFinder: successfulFinder)!
 
-    let chapter = Chapter(from: url, withFinder: finder)!
-
-    let desc = "1. A Stranger in an even Stranger Land - \(chapter.lastUpdate) - https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future"
-    XCTAssertEqual("\(chapter)", desc)
-  }
-}
-
-// MARK: - FailingOnURLChapterTests
-
-final class FailingOnURLChapterTests: XCTestCase {
-  let finder = Chapter.Finder(findURL: { _ in nil },
-                              findTitle: { _ in "1. A Stranger in an even Stranger Land" },
-                              findContent: { _ in "Chapter content" })
-
-  func testFailingInitFromURL() {
-    let chapter = Chapter(from: singleChapterURL, withFinder: finder)
-
-    XCTAssertNil(chapter)
+    let desc = "1. A Stranger in an even Stranger Land - \(res.lastUpdate) - https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future"
+    XCTAssertEqual("\(res)", desc)
   }
 
-  func testFailingInitFromDocument() {
-    let chapter = Chapter(from: singleChapterDoc, withFinder: finder)
+  // MARK: Found nil url tests
 
-    XCTAssertNil(chapter)
+  func testInitFromURLWhenFoundURLIsNilReturnsNil() {
+    let res = Chapter(from: singleChapterURL, withFinder: nilURLFinder)
+
+    XCTAssertNil(res)
   }
 
-  func testUpdateReturnsFailureWithCorrectMessage() {
-    let chapter = Chapter(
-      url: URL(string: "https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future")!,
-      title: "1. A Stranger in an even Stranger Land",
-      content: "Content text",
+  func testInitFromDocumentWhenFoundURLIsNilReturnsNil() {
+    let doc = singleChapterURL.getDocument()!
+
+    let res = Chapter(from: doc, withFinder: nilURLFinder)
+
+    XCTAssertNil(res)
+  }
+
+  func testUpdateReturnsFailureWithCorrectMessageWhenFoundURLIsNil() {
+    let res = Chapter(
+      url: expectedURL,
+      title: expectedTitle,
+      content: expectedContent,
       lastUpdate: Date(),
-      finder: finder)
+      finder: nilURLFinder
+    )
 
-    XCTAssertEqual(chapter.update(),
-                   UpdateResult.failure("Failed to update the chapter from '\(chapter.url.absoluteString)'"))
-  }
-}
-
-// MARK: - FailingOnTitleChapterTests
-
-final class FailingOnTitleChapterTests: XCTestCase {
-  let finder = Chapter.Finder(findURL: { _ in URL(string: "https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future") },
-                              findTitle: { _ in nil },
-                              findContent: { _ in "Chapter content" })
-
-  func testFailingInitFromURL() {
-    let chapter = Chapter(from: singleChapterURL, withFinder: finder)
-
-    XCTAssertNil(chapter)
+    XCTAssertEqual(res.update(),
+                   UpdateResult.failure("Failed to update the chapter from '\(res.url.absoluteString)'"))
   }
 
-  func testFailingInitFromDocument() {
-    let chapter = Chapter(from: singleChapterDoc, withFinder: finder)
+  // MARK: Found nil title tests
 
-    XCTAssertNil(chapter)
+  func testInitFromURLWhenFoundTitleIsNilReturnsNil() {
+    let res = Chapter(from: singleChapterURL, withFinder: nilTitleFinder)
+
+    XCTAssertNil(res)
   }
 
-  func testUpdateReturnsFailureWithCorrectMessage() {
-    let chapter = Chapter(
-      url: URL(string: "https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future")!,
-      title: "1. A Stranger in an even Stranger Land",
-      content: "Content text",
+  func testInitFromDocumentWhenFoundTitleIsNilReturnsNil() {
+    let doc = singleChapterURL.getDocument()!
+
+    let res = Chapter(from: doc, withFinder: nilTitleFinder)
+
+    XCTAssertNil(res)
+  }
+
+  func testUpdateReturnsFailureWithCorrectMessageWhenFoundTitleIsNil() {
+    let res = Chapter(
+      url: expectedURL,
+      title: expectedTitle,
+      content: expectedContent,
       lastUpdate: Date(),
-      finder: finder)
+      finder: nilTitleFinder
+    )
 
-    XCTAssertEqual(chapter.update(),
-                   UpdateResult.failure("Failed to update the chapter from '\(chapter.url.absoluteString)'"))
-  }
-}
-
-// MARK: - FailingOnContentChapterTests
-
-final class FailingOnContentChapterTests: XCTestCase {
-  let finder = Chapter.Finder(findURL: { _ in URL(string: "https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future") },
-                              findTitle: { _ in "1. A Stranger in an even Stranger Land" },
-                              findContent: { _ in nil })
-
-  func testFailingInitFromURL() {
-    let chapter = Chapter(from: singleChapterURL, withFinder: finder)
-
-    XCTAssertNil(chapter)
+    XCTAssertEqual(res.update(),
+                   UpdateResult.failure("Failed to update the chapter from '\(res.url.absoluteString)'"))
   }
 
-  func testFailingInitFromDocument() {
-    let chapter = Chapter(from: singleChapterDoc, withFinder: finder)
+  // MARK: Found nil content tests
 
-    XCTAssertNil(chapter)
+  func testInitFromURLWhenFoundContentIsNilReturnsNil() {
+    let res = Chapter(from: singleChapterURL, withFinder: nilContentFinder)
+
+    XCTAssertNil(res)
   }
 
-  func testUpdateReturnsFailureWithCorrectMessage() {
-    let chapter = Chapter(
-      url: URL(string: "https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future")!,
-      title: "1. A Stranger in an even Stranger Land",
-      content: "Content text",
+  func testInitFromDocumentWhenFoundContentIsNilReturnsNil() {
+    let doc = singleChapterURL.getDocument()!
+
+    let res = Chapter(from: doc, withFinder: nilContentFinder)
+
+    XCTAssertNil(res)
+  }
+
+  func testUpdateReturnsFailureWithCorrectMessageWhenFoundContentIsNil() {
+    let res = Chapter(
+      url: expectedURL,
+      title: expectedTitle,
+      content: expectedContent,
       lastUpdate: Date(),
-      finder: finder)
+      finder: nilContentFinder
+    )
 
-    XCTAssertEqual(chapter.update(),
-                   UpdateResult.failure("Failed to update the chapter from '\(chapter.url.absoluteString)'"))
+    XCTAssertEqual(res.update(),
+                   UpdateResult.failure("Failed to update the chapter from '\(res.url.absoluteString)'"))
   }
-}
 
-// MARK: - InvalidUrlChapterTests
+  // MARK: Invalid url tests
 
-final class InvalidUrlChapterTests: XCTestCase {
-  let finder = Chapter.Finder(findURL: { _ in URL(string: "https://www.fanfiction.net/s/9443327/1/A-Third-Path-to-the-Future") },
-                              findTitle: { _ in "1. A Stranger in an even Stranger Land" },
-                              findContent: { _ in "Chapter content" })
+  func testInitFromInvalidURLReturnsNils() {
+    let invalidURL = URL(fileURLWithPath: "/")
+    let res = Chapter(from: invalidURL, withFinder: successfulFinder)
 
-  let url = URL(fileURLWithPath: "/")
-
-  func testFailingInitFromURL() {
-    let chapter = Chapter(from: url, withFinder: finder)
-
-    XCTAssertNil(chapter)
+    XCTAssertNil(res)
   }
 }
