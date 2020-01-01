@@ -40,14 +40,14 @@ public final class Chapter {
   }
 }
 
-extension Chapter {
+public extension Chapter {
   // MARK: - Chapter.Finder
 
   /// A `Chapter.Finder` gathers the necessary method to find all relevant informations about chapter inside a document.
   ///
   /// The given `Document` can be anything the user whish it to be as long as it allows
   /// getting the chapter from it.
-  public struct Finder {
+  struct Finder {
     /// Used to find the URL in a given document.
     ///
     /// Returns `nil` on failure.
@@ -73,14 +73,14 @@ extension Chapter {
   }
 }
 
-extension Chapter {
+public extension Chapter {
   // MARK: - Convenience init
 
   /// Attempts to initialize a chapter from a given `URL`, using the provided `Chapter.Finder`.
   /// - Parameters:
   ///   - url: `URL` to use to get the chapter.
   ///   - finder: `Chapter.Finder` to use to obtain the chapter's data.
-  public convenience init?(from url: URL, withFinder finder: Chapter.Finder) {
+  convenience init?(from url: URL, withFinder finder: Chapter.Finder) {
     guard let doc = url.getDocument() else {
       return nil
     }
@@ -91,7 +91,7 @@ extension Chapter {
   /// - Parameters:
   ///   - doc: `Document` in which to find the chapter.
   ///   - finder: `Chapter.Finder` to use to obtain the chapter's data.
-  public convenience init?(from doc: Document, withFinder finder: Chapter.Finder) {
+  convenience init?(from doc: Document, withFinder finder: Chapter.Finder) {
     guard let canonicalURL = finder.findURL(doc),
           let title = finder.findTitle(doc),
           let content = finder.findContent(doc)
@@ -108,7 +108,7 @@ extension Chapter {
   ///
   /// - Note: In case of failure, the message is considered an implementation details.
   /// - Note: A chapter is considered to have changed if and only if it's **title** or **content** have changed. The update date and url are ignored for this.
-  public func update() -> UpdateResult {
+  func update() -> UpdateResult {
     guard let updatedChapter = Chapter(from: url, withFinder: finder) else {
       return .failure("Failed to update the chapter from '\(url.absoluteString)'")
     }
