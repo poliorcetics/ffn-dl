@@ -31,7 +31,7 @@ public final class Chapter {
   ///   - content: Content of the chapter.
   ///   - lastUpdate: When the chapter was last updated **by the programm**.
   ///   - finder: The `Chapter.Finder` to use when updating this chapter.
-  init(url: URL, title: String, content: String, lastUpdate: Date, finder: Chapter.Finder) {
+  internal init(url: URL, title: String, content: String, lastUpdate: Date, finder: Chapter.Finder) {
     self.url = url
     self.title = title
     self.content = content
@@ -44,14 +44,23 @@ extension Chapter {
   // MARK: - Chapter.Finder
 
   /// A `Chapter.Finder` gathers the necessary method to find all relevant informations about chapter inside a document.
+  ///
+  /// The given `Document` can be anything the user whish it to be as long as it allows
+  /// getting the chapter from it.
   public struct Finder {
     /// Used to find the URL in a given document.
+    ///
+    /// Returns `nil` on failure.
     public let findURL: (Document) -> URL?
 
     /// Used to find the title in a given document.
+    ///
+    /// Returns `nil` on failure.
     public let findTitle: (Document) -> String?
 
     /// Used to find the content in a given document.
+    ///
+    /// Returns `nil` on failure.
     public let findContent: (Document) -> String?
 
     public init(findURL: @escaping (Document) -> URL?,
@@ -92,6 +101,13 @@ extension Chapter {
     self.init(url: canonicalURL, title: title, content: content, lastUpdate: Date(), finder: finder)
   }
 
+  // MARK: - Updating
+
+  /// Attempts to update `self`, returning an `UpdateResult` indicating how the operation
+  /// went.
+  ///
+  /// - Note: In case of failure, the message is considered an implementation details.
+  /// - Note: A chapter is considered to have changed if and only if it's **title** or **content** have changed. The update date and url are ignored for this.
   public func update() -> UpdateResult {
     guard let updatedChapter = Chapter(from: url, withFinder: finder) else {
       return .failure("Failed to update the chapter from '\(url.absoluteString)'")
