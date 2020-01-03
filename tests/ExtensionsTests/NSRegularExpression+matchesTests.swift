@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import ffn_dl
 
 final class NSRegularExpressionTests: XCTestCase {
   // All tests will be done on those two regexes
