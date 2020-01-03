@@ -12,8 +12,8 @@ import Foundation
 ///
 /// A correctly-built story will always have **at least one valid chapter**.
 ///
-/// 
-public protocol Story: CustomStringConvertible {
+/// - Warning: `Equatable` and `Hashable` conformances are left as implementation details.
+public protocol Story: Hashable, CustomStringConvertible {
   /// URL to the first chapter and/or description of the story.
   var url: URL { get }
 
@@ -80,6 +80,7 @@ public protocol Story: CustomStringConvertible {
   mutating func update() -> Story.UpdateResult
 
   /// Updates the given chapters as well as any new chapter.
+  /// Chapters are indexed starting at one here.
   mutating func update(chapters: [Int]) -> Story.UpdateResult
 
   /// Attempts to initialize a full story fro a given `URL`.
