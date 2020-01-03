@@ -11,6 +11,8 @@ import Foundation
 /// A Universe for fanfictions.
 ///
 /// Examples: *Harry Potter*, *Star Wars*, *Star Wars + Harry Potter*.
+///
+/// Conformances to `Equatable` and `Hashable` only consider `url`.
 public struct Universe {
   /// URL to the universe page.
   public let url: URL
@@ -85,6 +87,24 @@ public extension Universe {
     }
     let isCrossover = finder.findCrossover(doc)
     self.init(url: url, name: name, isCrossover: isCrossover)
+  }
+}
+
+extension Universe: Equatable {
+  // MARK: - Equatable
+
+  /// Only considers `url`.
+  public static func ==(lhs: Self, rhs: Self) -> Bool {
+    lhs.url == rhs.url
+  }
+}
+
+extension Universe: Hashable {
+  // MARK: - Hashable
+
+  /// Only considers `url`.
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(url)
   }
 }
 

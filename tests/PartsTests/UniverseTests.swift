@@ -210,4 +210,117 @@ final class CrossoverUniverseTests: XCTestCase {
 
     XCTAssertNil(res)
   }
+
+  // MARK: Equatable tests
+
+  func testEqualityOnSameUniverseReturnsTrue() {
+    let uni = Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover)
+    let uni2 = Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover)
+
+    XCTAssertEqual(uni, uni2)
+  }
+
+  func testEqualityOnUniversesWithDifferentNamesReturnsTrue() {
+    let uni = Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover)
+    let uni2 = Universe(url: singleChapterURL, name: "\(expectedName)AddOn", isCrossover: expectedIsCrossover)
+
+    XCTAssertEqual(uni, uni2)
+  }
+
+  func testEqualityOnUniverseWithDifferentCrossoverReturnsTrue() {
+    let uni = Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover)
+    let uni2 = Universe(url: singleChapterURL, name: expectedName, isCrossover: !expectedIsCrossover)
+
+    XCTAssertEqual(uni, uni2)
+  }
+
+
+  func testEqualityOnUniversesWithDifferentURLsReturnsFalse() {
+    let uni = Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover)
+    let uni2 = Universe(url: expectedURL, name: expectedName, isCrossover: expectedIsCrossover)
+
+    XCTAssertNotEqual(uni, uni2)
+  }
+
+  func testEqualityOnUniversesWithDifferentURLsAndNamesReturnsFalse() {
+    let uni = Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover)
+    let uni2 = Universe(url: expectedURL, name: "\(expectedName)AddOn", isCrossover: expectedIsCrossover)
+
+    XCTAssertNotEqual(uni, uni2)
+  }
+
+  func testEqualityOnUniversesWithDifferentURLsAndNamesAndCrossoverReturnsFalse() {
+    let uni = Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover)
+    let uni2 = Universe(url: expectedURL, name: "\(expectedName)AddOn", isCrossover: !expectedIsCrossover)
+
+    XCTAssertNotEqual(uni, uni2)
+  }
+
+  // MARK: Hashable tests
+
+  func testHashabilityOnSameUniverseReturnsTrue() {
+    var h = Hasher()
+    Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h)
+    let uni_h = h.finalize()
+    var h2 = Hasher()
+    Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h2)
+    let uni2_h = h2.finalize()
+
+    XCTAssertEqual(uni_h, uni2_h)
+  }
+
+  func testHashabilityOnUniversesWithDifferentNamesReturnsTrue() {
+    var h = Hasher()
+    Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h)
+    let uni_h = h.finalize()
+    var h2 = Hasher()
+    Universe(url: singleChapterURL, name: "\(expectedName)AddOn", isCrossover: expectedIsCrossover).hash(into: &h2)
+    let uni2_h = h2.finalize()
+
+    XCTAssertEqual(uni_h, uni2_h)
+  }
+
+  func testHashabilityOnUniversesWithDifferentCrossoverReturnsTrue() {
+    var h = Hasher()
+    Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h)
+    let uni_h = h.finalize()
+    var h2 = Hasher()
+    Universe(url: singleChapterURL, name: "\(expectedName)AddOn", isCrossover: !expectedIsCrossover).hash(into: &h2)
+    let uni2_h = h2.finalize()
+
+    XCTAssertEqual(uni_h, uni2_h)
+  }
+
+  func testHashabilityOnUniversesWithDifferentURLsReturnsFalse() {
+    var h = Hasher()
+    Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h)
+    let uni_h = h.finalize()
+    var h2 = Hasher()
+    Universe(url: expectedURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h2)
+    let uni2_h = h2.finalize()
+
+    XCTAssertNotEqual(uni_h, uni2_h)
+  }
+
+  func testHashabilityOnUniversesWithDifferentURLsAndNameReturnsFalse() {
+    var h = Hasher()
+    Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h)
+    let uni_h = h.finalize()
+    var h2 = Hasher()
+    Universe(url: expectedURL, name: "\(expectedName)AddOn", isCrossover: expectedIsCrossover).hash(into: &h2)
+    let uni2_h = h2.finalize()
+
+    XCTAssertNotEqual(uni_h, uni2_h)
+  }
+
+  func testHashabilityOnUniversesWithDifferentURLsAndNamesAndCrossoverReturnsFalse() {
+    var h = Hasher()
+    Universe(url: singleChapterURL, name: expectedName, isCrossover: expectedIsCrossover).hash(into: &h)
+    let uni_h = h.finalize()
+    var h2 = Hasher()
+    Universe(url: expectedURL, name: "\(expectedName)AddOn", isCrossover: !expectedIsCrossover).hash(into: &h2)
+    let uni2_h = h2.finalize()
+
+    XCTAssertNotEqual(uni_h, uni2_h)
+  }
 }
