@@ -232,4 +232,126 @@ final class ChapterTests: XCTestCase {
 
     XCTAssertNil(res)
   }
+
+  // MARK: Equatable tests
+
+  func testEqualityWithSameChaptersReturnsTrue() {
+    let date = Date()
+    let ch1 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder)
+    let ch2 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder)
+
+    XCTAssertEqual(ch1, ch2)
+  }
+
+  func testEqualityWithDifferentFindersReturnsTrue() {
+    let date = Date()
+    let ch1 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder)
+    let ch2 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: nilURLFinder)
+
+    XCTAssertEqual(ch1, ch2)
+  }
+
+  func testEqualityWithDifferentDateReturnsTrue() {
+    let ch1 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: Date(), finder: successfulFinder)
+    let ch2 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: Date(), finder: successfulFinder)
+
+    XCTAssertEqual(ch1, ch2)
+  }
+
+  func testEqualityWithDifferentContentReturnsFalse() {
+    let date = Date()
+    let ch1 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder)
+    let ch2 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent + "addon", lastUpdate: date, finder: successfulFinder)
+
+    XCTAssertNotEqual(ch1, ch2)
+  }
+
+  func testEqualityWithDifferentTitleReturnsFalse() {
+    let date = Date()
+    let ch1 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder)
+    let ch2 = Chapter(url: expectedURL, title: expectedTitle + "addon", content: expectedContent, lastUpdate: date, finder: successfulFinder)
+
+    XCTAssertNotEqual(ch1, ch2)
+  }
+
+  func testEqualityWithDifferentURLReturnsFalse() {
+    let date = Date()
+    let ch1 = Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder)
+    let ch2 = Chapter(url: singleChapterURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder)
+
+    XCTAssertNotEqual(ch1, ch2)
+  }
+
+  // MARK: Hashable Tests
+
+  func testHashabilityWithSameChaptersReturnsTrue() {
+    let date = Date()
+    var h1 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h1)
+    let ch1 = h1.finalize()
+    var h2 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h2)
+    let ch2 = h2.finalize()
+
+    XCTAssertEqual(ch1, ch2)
+  }
+
+  func testHashabilityWithDifferentFindersReturnsTrue() {
+    let date = Date()
+    var h1 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h1)
+    let ch1 = h1.finalize()
+    var h2 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: nilURLFinder).hash(into: &h2)
+    let ch2 = h2.finalize()
+
+    XCTAssertEqual(ch1, ch2)
+  }
+
+  func testHashabilityWithDifferentDateReturnsTrue() {
+    var h1 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: Date(), finder: successfulFinder).hash(into: &h1)
+    let ch1 = h1.finalize()
+    var h2 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: Date(), finder: successfulFinder).hash(into: &h2)
+    let ch2 = h2.finalize()
+
+    XCTAssertEqual(ch1, ch2)
+  }
+
+  func testHashabilityWithDifferentContentReturnsFalse() {
+    let date = Date()
+    var h1 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h1)
+    let ch1 = h1.finalize()
+    var h2 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent + "addon", lastUpdate: date, finder: successfulFinder).hash(into: &h2)
+    let ch2 = h2.finalize()
+
+    XCTAssertNotEqual(ch1, ch2)
+  }
+
+  func testHashabilityWithDifferentTitleReturnsFalse() {
+    let date = Date()
+    var h1 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h1)
+    let ch1 = h1.finalize()
+    var h2 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle + "addon", content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h2)
+    let ch2 = h2.finalize()
+
+    XCTAssertNotEqual(ch1, ch2)
+  }
+
+  func testHashabilityWithDifferentURLReturnsFalse() {
+    let date = Date()
+    var h1 = Hasher()
+    Chapter(url: expectedURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h1)
+    let ch1 = h1.finalize()
+    var h2 = Hasher()
+    Chapter(url: singleChapterURL, title: expectedTitle, content: expectedContent, lastUpdate: date, finder: successfulFinder).hash(into: &h2)
+    let ch2 = h2.finalize()
+
+    XCTAssertNotEqual(ch1, ch2)
+  }
 }

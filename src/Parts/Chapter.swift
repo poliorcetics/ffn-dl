@@ -9,6 +9,8 @@
 import Foundation
 
 /// A chapter inside a story.
+///
+/// Conformances to `Equatable` and `Hashable` only consider `url`, `title` and `content`.
 public struct Chapter {
   /// URL of the chapter, should be as precise as possible.
   public let url: URL
@@ -119,6 +121,26 @@ public extension Chapter {
     let chapterChanged = title != updatedChapter.title || content != updatedChapter.content
     self = updatedChapter
     return chapterChanged ? .success : .unchanged
+  }
+}
+
+extension Chapter: Equatable {
+  // MARK: - Equatable
+
+  /// Only considers `url`, `title` and `content`.
+  public static func ==(lhs: Self, rhs: Self) -> Bool {
+    lhs.url == rhs.url && lhs.title == rhs.title && lhs.content == rhs.content
+  }
+}
+
+extension Chapter: Hashable {
+  // MARK: - Hashable
+
+  /// Only considers `url`, `title` and `content`.
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(url)
+    hasher.combine(title)
+    hasher.combine(content)
   }
 }
 
