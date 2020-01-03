@@ -18,7 +18,7 @@ final class AuthorTests: XCTestCase {
   // RuneWitchSakura
   let singleChapterURL = URL(fileURLWithPath: "\(pathToTestDir)/singleChapterFic.html")
 
-  let expectedURL = URL(string: "https://www.fanfiction.net/u/4785338/Vimesenthusiast")
+  let expectedURL = URL(string: "https://www.fanfiction.net/u/4785338/Vimesenthusiast")!
   let expectedName = "Vimesenthusiast"
 
   // MARK: Finders
@@ -95,12 +95,88 @@ final class AuthorTests: XCTestCase {
     XCTAssertNil(res)
   }
 
-  // MARK: Invalid URL
+  // MARK: Invalid URL test
 
   func testInitFromInvalidURLReturnsNils() {
     let invalidURL = URL(fileURLWithPath: "/")
     let res = Author(from: invalidURL, withFinder: successfulFinder)
 
     XCTAssertNil(res)
+  }
+
+  // MARK: Equatable tests
+
+  func testEqualityOnSameAuthorReturnsTrue() {
+    let author = Author(url: singleChapterURL, name: expectedName)
+    let author2 = Author(url: singleChapterURL, name: expectedName)
+
+    XCTAssertEqual(author, author2)
+  }
+
+  func testEqualityOnAuthorsWithDifferentNamesReturnsTrue() {
+    let author = Author(url: singleChapterURL, name: expectedName)
+    let author2 = Author(url: singleChapterURL, name: "\(expectedName)AddOn")
+
+    XCTAssertEqual(author, author2)
+  }
+
+  func testEqualityOnAuthorsWithDifferentURLsReturnsFalse() {
+    let author = Author(url: singleChapterURL, name: expectedName)
+    let author2 = Author(url: expectedURL, name: expectedName)
+
+    XCTAssertNotEqual(author, author2)
+  }
+
+  func testEqualityOnAuthorsWithDifferentURLsAndNameReturnsFalse() {
+    let author = Author(url: singleChapterURL, name: expectedName)
+    let author2 = Author(url: expectedURL, name: "\(expectedName)AddOn")
+
+    XCTAssertNotEqual(author, author2)
+  }
+
+  // MARK: Hashable tests
+
+  func testHashabilityOnSameAuthorReturnsTrue() {
+    var h = Hasher()
+    Author(url: singleChapterURL, name: expectedName).hash(into: &h)
+    let author_h = h.finalize()
+    var h2 = Hasher()
+    Author(url: singleChapterURL, name: expectedName).hash(into: &h2)
+    let author2_h = h2.finalize()
+
+    XCTAssertEqual(author_h, author2_h)
+  }
+
+  func testHashabilityOnAuthorsWithDifferentNamesReturnsTrue() {
+    var h = Hasher()
+    Author(url: singleChapterURL, name: expectedName).hash(into: &h)
+    let author_h = h.finalize()
+    var h2 = Hasher()
+    Author(url: singleChapterURL, name: "\(expectedName)AddOn").hash(into: &h2)
+    let author2_h = h2.finalize()
+
+    XCTAssertEqual(author_h, author2_h)
+  }
+
+  func testHashabilityOnAuthorsWithDifferentURLsReturnsFalse() {
+    var h = Hasher()
+    Author(url: singleChapterURL, name: expectedName).hash(into: &h)
+    let author_h = h.finalize()
+    var h2 = Hasher()
+    Author(url: expectedURL, name: expectedName).hash(into: &h2)
+    let author2_h = h2.finalize()
+
+    XCTAssertNotEqual(author_h, author2_h)
+  }
+
+  func testHashabilityOnAuthorsWithDifferentURLsAndNameReturnsFalse() {
+    var h = Hasher()
+    Author(url: singleChapterURL, name: expectedName).hash(into: &h)
+    let author_h = h.finalize()
+    var h2 = Hasher()
+    Author(url: expectedURL, name: "\(expectedName)AddOn").hash(into: &h2)
+    let author2_h = h2.finalize()
+
+    XCTAssertNotEqual(author_h, author2_h)
   }
 }

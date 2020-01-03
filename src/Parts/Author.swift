@@ -9,6 +9,8 @@
 import Foundation
 
 /// An author of fanfictions.
+///
+/// Conformances to `Equatable` and `Hashable` only consider `url`.
 public struct Author {
   /// URL to the author's page.
   public let url: URL
@@ -65,6 +67,24 @@ public extension Author {
         return nil
     }
     self.init(url: url, name: name)
+  }
+}
+
+extension Author: Equatable {
+  // MARK: - Equatable
+
+  /// Only considers `url`.
+  public static func ==(lhs: Self, rhs: Self) -> Bool {
+    lhs.url == rhs.url
+  }
+}
+
+extension Author: Hashable {
+  // MARK: - Hashable
+
+  /// Only considers `url`.
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(url)
   }
 }
 
