@@ -6,6 +6,8 @@
 //  Copyright © 2019 Alexis Bourget. All rights reserved.
 //
 
+import Foundation
+
 internal extension URL {
   /// Attempts to get the content stored at `self`, with `UTF-8` encoding.
   ///
