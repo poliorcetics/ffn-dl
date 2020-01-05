@@ -1,5 +1,5 @@
 //
-//  FFNSite.swift
+//  FFNSiteTests.swift
 //  ffn-dlTests
 //
 //  Created by Alexis Bourget on 2020-01-04.
@@ -15,74 +15,57 @@ final class FFNSiteTests: XCTestCase {
   }
 
   func testMainURLIsCorrect() {
-    let mainURL = URL(string: "https://www.fanfiction.net")!
-
-    XCTAssertEqual(FFNSite.mainURL, mainURL)
+    XCTAssertEqual(FFNSite.mainURL, URL(string: "https://www.fanfiction.net")!)
   }
 
   func testMobileURLIsCorrect() {
-    let mobileURL = URL(string: "https://m.fanfiction.net")!
-
-    XCTAssertEqual(FFNSite.mobileURL, mobileURL)
+    XCTAssertEqual(FFNSite.mobileURL, URL(string: "https://m.fanfiction.net")!)
   }
 
-  func testMainURLStringIsCorrect() {
-    let mainURLString = "https://www.fanfiction.net"
-
-    XCTAssertEqual(FFNSite.mainURLString, mainURLString)
+  func testMainAbsoluteStringIsCorrect() {
+    XCTAssertEqual(FFNSite.mainAbsoluteString, "https://www.fanfiction.net")
   }
 
-  func testMobileURLStringIsCorrect() {
-    let mobileURLString = "https://m.fanfiction.net"
-
-    XCTAssertEqual(FFNSite.mobileURLString, mobileURLString)
+  func testMobileAbsoluteStringIsCorrect() {
+    XCTAssertEqual(FFNSite.mobileAbsoluteString, "https://m.fanfiction.net")
   }
 
-  func testSiteRegexIsCorrect() {
-    let siteRegex = NSRegularExpression("https://(m|www).fanfiction.net(/.*)?")
-
-    XCTAssertEqual(FFNSite.siteRegex, siteRegex)
+  func testRegexIsCorrect() {
+    XCTAssertEqual(FFNSite.regex, NSRegularExpression("https://(m|www).fanfiction.net(/.*)?"))
   }
 
   func testConversionFromInvalidURLToMainURLReturnsNil() {
-    let url = URL(string: "https://archiveofourown.org")!
-
-    XCTAssertNil(FFNSite.convertToMainURL(from: url))
+    XCTAssertNil(FFNSite.convertToMainURL(URL(string: "https://archiveofourown.org")!))
   }
 
   func testConversionFromAlreadyValidURLToMainURLReturnsCorrectly() {
     let url = URL(string: "https://www.fanfiction.net/s/12125300/49/")!
 
-    let result = FFNSite.convertToMainURL(from: url)
     let expected = URL(string: "https://www.fanfiction.net/s/12125300/49/")!
 
-    XCTAssertEqual(result, expected)
+    XCTAssertEqual(FFNSite.convertToMainURL(url), expected)
   }
 
   func testConversionFromNotAlreadyValidURLToMainURLReturnsCorrectly() {
     let url = URL(string: "https://m.fanfiction.net/s/12125300/49/")!
 
-    let result = FFNSite.convertToMainURL(from: url)
     let expected = URL(string: "https://www.fanfiction.net/s/12125300/49/")!
 
-    XCTAssertEqual(result, expected)
+    XCTAssertEqual(FFNSite.convertToMainURL(url), expected)
   }
 
   func testFindCanonicalURLReturnsNilWhenNotPresent() {
     let doc = Document.parse(html: "<html><head></head><body></body></html>")!
 
-    let head = doc.head!
-
-    XCTAssertNil(FFNSite.findCanonicalUrl(in: head))
+    XCTAssertNil(FFNSite.findCanonicalUrl(in: doc.head!))
   }
 
   func testFindCanonicalURLReturnsCorrectURLWhenPresent() {
     let fileContent = try! String(contentsOfFile: "\(pathToTestDir)/complexValidHTMLTestFile.html")
-
     let doc = Document.parse(html: fileContent)!
-    let head = doc.head!
 
     let expected = URL(string: "https://www.fanfiction.net/s/13342536/1/The-devil-and-MISTER-Jones")
-    XCTAssertEqual(FFNSite.findCanonicalUrl(in: head), expected)
+
+    XCTAssertEqual(FFNSite.findCanonicalUrl(in: doc.head!), expected)
   }
 }

@@ -342,6 +342,6 @@ fileprivate extension URL {
     precondition(chapterNum > 0)
 
     let storyID = pathComponents[2]
-    return URL(string: "\(FFNSite.mainURLString)/s/\(storyID)/\(chapterNum)")!
+    return URL(string: "\(FFNSite.mainAbsoluteString)/s/\(storyID)/\(chapterNum)")!
   }
 }
