@@ -13,6 +13,12 @@ import XCTest
 
 // MARK: - Mock Implementations
 
+fileprivate enum MockSite: Site {
+  static let name = "Ultimate HP FFN"
+  static let mainURL = URL(string: "https://ultimatehpfanfiction.com")!
+  static let regex = NSRegularExpression("https://(?:www.)?ultimatehpfanfiction.com/.+?")
+}
+
 fileprivate struct MockChapterBuilder {
   static let url = URL(string: "https://www.fanfiction.net/s/4951074/1/Harry-s-Little-Army-of-Psychos")!
   static let title = "Test Chapter Title"
@@ -61,6 +67,8 @@ fileprivate struct MockUniverseBuilder {
 }
 
 fileprivate struct MockStory: Story {
+  typealias Site = MockSite
+
   let url = URL(string: "https://www.fanfiction.net/s/4951074/1/Harry-s-Little-Army-of-Psychos")!
 
   let title = "Test Title"
