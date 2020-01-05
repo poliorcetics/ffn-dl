@@ -3,7 +3,7 @@
 //  ffn-dlTests
 //
 //  Created by Alexis Bourget on 2020-01-01.
-//  Copyright © 2020 Alexis Bourget. All rights reserved.
+//  See LICENSE at the root of the project.
 //
 // This file only tests the default implementations.
 

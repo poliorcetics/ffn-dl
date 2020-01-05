@@ -3,7 +3,7 @@
 //  ffn-dlTests
 //
 //  Created by Alexis Bourget on 2020-01-04.
-//  Copyright © 2020 Alexis Bourget. All rights reserved.
+//  See LICENSE at the root of the project.
 //
 
 import XCTest

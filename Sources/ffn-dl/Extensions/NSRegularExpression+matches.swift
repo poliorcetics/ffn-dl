@@ -3,7 +3,7 @@
 //  ffn-dl
 //
 //  Created by Alexis Bourget on 2020-01-03.
-//  Copyright © 2020 Alexis Bourget. All rights reserved.
+//  See LICENSE at the root of the project.
 //
 
 import Foundation
