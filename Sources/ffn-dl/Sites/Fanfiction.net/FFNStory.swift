@@ -9,7 +9,8 @@
 import Foundation
 
 public struct FFNStory: Story, Hashable {
-  public typealias Site = FFNSite
+  private static let _site = FFNSite.self
+  public static let site: Site.Type = _site
 
   // MARK: - Stored Variables
 
@@ -76,7 +77,7 @@ public extension FFNStory {
       guard let head = doc.head else {
         return nil
       }
-      return Self.Site.findCanonicalUrl(in: head)
+      return Self._site.findCanonicalUrl(in: head)
     },
     findTitle: { doc in
       guard let body = doc.body else {
@@ -131,7 +132,7 @@ public extension FFNStory {
 
   init?(from doc: Document) {
     guard let head = doc.head,
-      let url = Self.Site.findCanonicalUrl(in: head)?.makeChapterURL(for: 1),
+      let url = Self._site.findCanonicalUrl(in: head)?.makeChapterURL(for: 1),
       let body = doc.body,
       let title = findTitle(in: body),
       let author = Author(from: doc, withFinder: Self.authorFinder),
@@ -344,6 +345,6 @@ fileprivate extension URL {
     precondition(chapterNum > 0)
 
     let storyID = pathComponents[2]
-    return URL(string: "\(FFNStory.Site.mainAbsoluteString)/s/\(storyID)/\(chapterNum)")!
+    return URL(string: "\(FFNStory.site.mainAbsoluteString)/s/\(storyID)/\(chapterNum)")!
   }
 }

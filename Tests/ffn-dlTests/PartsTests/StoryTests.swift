@@ -67,7 +67,7 @@ fileprivate struct MockUniverseBuilder {
 }
 
 fileprivate struct MockStory: Story {
-  typealias Site = MockSite
+  static let site: Site.Type = MockSite.self
 
   let url = URL(string: "https://www.fanfiction.net/s/4951074/1/Harry-s-Little-Army-of-Psychos")!
 

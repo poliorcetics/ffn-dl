@@ -15,7 +15,7 @@ import Foundation
 /// - Warning: `Equatable` and `Hashable` conformances are left as implementation details.
 public protocol Story: Hashable, CustomStringConvertible {
   /// Website associated with the story.
-  associatedtype Site: ffn_dl.Site
+  static var site: Site.Type { get }
 
   /// URL to the first chapter and/or description of the story.
   var url: URL { get }
