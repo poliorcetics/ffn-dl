@@ -55,6 +55,15 @@ public extension FFNStory {
     tokens.contains("- Status: Complete -") ? .complete : .inProgress
   }
 
+  var shortTokens: String {
+    tokens
+      // Order is important here
+      .replacingOccurrences(of: ".?Rated: Fiction ", with: "", options: [.regularExpression])
+      // Cannot just replace " - Chapters: .*" because stories with one chapter do not have the tag in their tokens
+      .replacingOccurrences(of: " - Words: .*", with: "", options: [.regularExpression])
+      .replacingOccurrences(of: #" - Chapters: \d*"#, with: "", options: [.regularExpression])
+  }
+
   // MARK: - Finders
 
   // Author

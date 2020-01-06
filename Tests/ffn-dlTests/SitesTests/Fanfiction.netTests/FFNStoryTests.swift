@@ -20,6 +20,7 @@ final class FFNStoryTests: XCTestCase {
   static let author = Author(from: doc, withFinder: FFNStory.authorFinder)!
   static let universe = Universe(from: doc, withFinder: FFNStory.universeFinder)!
   static let tokens = "Rated: Fiction T - English - Humor/Adventure - Ron W., Harry P. - Words: 4,308 - Reviews: 805 - Favs: 6,784 - Follows: 1,409 - Published: 3/27/2009 - Status: Complete - id: 4951074"
+  static let shortTokens = "T - English - Humor/Adventure - Ron W., Harry P."
 
   static let wordCount = 4308
   static let htmlFilename = "harry-s-little-army-of-psychos_infos.html"
@@ -101,6 +102,7 @@ final class FFNStoryTests: XCTestCase {
     XCTAssertEqual(story.author, Self.author, "Author Verif failed", line: line)
     XCTAssertEqual(story.universe, Self.universe, "Universe Verif failed", line: line)
     XCTAssertEqual(story.tokens, Self.tokens, "Tokens Verif failed", line: line)
+    XCTAssertEqual(story.shortTokens, Self.shortTokens, "Short Tokens Verif failed", line: line)
 
     // Computed values
     XCTAssertEqual(story.chapterCount, 1, "Chapter count Verif failed", line: line)
