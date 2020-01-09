@@ -11,9 +11,7 @@ import Foundation
 /// A protocol representing a story.
 ///
 /// A correctly-built story will always have **at least one valid chapter**.
-///
-/// - Warning: `Equatable` and `Hashable` conformances are left as implementation details.
-public protocol Story: Hashable, CustomStringConvertible {
+public protocol Story: CustomStringConvertible {
   /// Website associated with the story.
   static var site: Site.Type { get }
 

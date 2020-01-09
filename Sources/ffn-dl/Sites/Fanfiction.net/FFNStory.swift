@@ -42,9 +42,13 @@ public struct FFNStory: Story, Hashable {
 public extension FFNStory {
   // MARK: - Computed Variables
 
-  var chapterCount: Int { findInt(in: tokens, searching: "Chapters:") ?? 1 }
+  var chapterCount: Int {
+    findInt(in: tokens, searching: "Chapters:") ?? 1
+  }
 
-  var wordCount: Int { findInt(in: tokens, searching: "Words:") ?? 0 }
+  var wordCount: Int {
+    findInt(in: tokens, searching: "Words:") ?? 0
+  }
 
   var language: String {
     let splitTokens = tokens.split(separator: "-")
