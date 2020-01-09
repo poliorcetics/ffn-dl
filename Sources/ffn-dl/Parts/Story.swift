@@ -69,10 +69,6 @@ public protocol Story: CustomStringConvertible {
   ///
   /// Default implementation: find the maximum of all update dates in `self.chapters`.
   var newestChapterUpdate: Date { get }
-  /// Name of the HTML file containing the informations about the story.
-  ///
-  /// Has a default implementation.
-  var HTMLInformationsFilename: String { get }
 
   /// Indicates whether the story was updated or not, and, if it was, exactly which chapters were.
   typealias UpdateResult = (state: ffn_dl.UpdateResult, updatedChapters: [Int])
@@ -122,13 +118,6 @@ public extension Story {
   var newestChapterUpdate: Date {
     let newestChapter = chapters.max { $0.lastUpdate < $1.lastUpdate }
     return newestChapter!.lastUpdate
-  }
-
-  var HTMLInformationsFilename: String {
-    let filename = title
-      .lowercased()
-      .replacingOccurrences(of: #"\W+"#, with: "-", options: .regularExpression)
-    return "\(filename)_infos.html"
   }
 }
 

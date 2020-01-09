@@ -23,11 +23,10 @@ final class FFNStoryTests: XCTestCase {
   static let shortTokens = "T - English - Humor/Adventure - Ron W., Harry P."
 
   static let wordCount = 4308
-  static let htmlFilename = "harry-s-little-army-of-psychos_infos.html"
 
   func testMemberWiseInitIsCorrect() {
     let story = FFNStory(url: Self.trueURL,
-                        title: Self.title,
+                         title: Self.title,
                          summary: Self.summary,
                          chapters: [Self.chapter],
                          author: Self.author,
@@ -116,7 +115,5 @@ final class FFNStoryTests: XCTestCase {
       XCTAssertEqual(story.oldestChapterUpdate, Self.chapter.lastUpdate, "Oldest update Verif failed", line: line)
       XCTAssertEqual(story.newestChapterUpdate, Self.chapter.lastUpdate, "Newest update Verif failed", line: line)
     }
-
-    XCTAssertEqual(story.HTMLInformationsFilename, Self.htmlFilename, "HTML infos filename Verif failed", line: line)
   }
 }

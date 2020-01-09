@@ -129,10 +129,6 @@ final class StoryTests: XCTestCase {
     XCTAssertEqual(story.newestChapterUpdate, story.chapters[2].lastUpdate)
   }
 
-  func testHTMLInformationsFilename() {
-    XCTAssertEqual(story.HTMLInformationsFilename, "test-title_infos.html")
-  }
-
   func testDescription() {
     let desc = """
     \(story.title)
