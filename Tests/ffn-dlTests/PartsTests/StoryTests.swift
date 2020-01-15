@@ -17,6 +17,11 @@ fileprivate enum MockSite: Site {
   static let name = "Ultimate HP FFN"
   static let mainURL = URL(string: "https://ultimatehpfanfiction.com")!
   static let regex = NSRegularExpression("https://(?:www.)?ultimatehpfanfiction.com/.+?")
+
+  // Default values, they are not tested here
+  static let authorFinder = FFNSite.authorFinder
+  static let chapterFinder = FFNSite.chapterFinder
+  static let universeFinder = FFNSite.universeFinder
 }
 
 fileprivate struct MockChapterBuilder {

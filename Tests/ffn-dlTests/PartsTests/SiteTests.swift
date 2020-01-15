@@ -13,6 +13,11 @@ fileprivate enum MockSiteWithDefaultMobileURL: Site {
   static let name = "Ultimate HP FFN"
   static let mainURL = URL(string: "https://ultimatehpfanfiction.com")!
   static let regex = NSRegularExpression("https://(?:www.)?ultimatehpfanfiction.com/.+?")
+
+  // Default values, they are not tested here
+  static let authorFinder = FFNSite.authorFinder
+  static let chapterFinder = FFNSite.chapterFinder
+  static let universeFinder = FFNSite.universeFinder
 }
 
 fileprivate enum MockSiteWithSpecificMobileURL: Site {
@@ -20,6 +25,11 @@ fileprivate enum MockSiteWithSpecificMobileURL: Site {
   static let mainURL = URL(string: "https://www.fanfiction.net")!
   static let mobileURL = URL(string: "https://m.fanfiction.net")!
   static let regex = NSRegularExpression("https://(m|www).fanfiction.net(/.*)?")
+
+  // Default values, they are not tested here
+  static let authorFinder = FFNSite.authorFinder
+  static let chapterFinder = FFNSite.chapterFinder
+  static let universeFinder = FFNSite.universeFinder
 }
 
 final class SiteTests: XCTestCase {

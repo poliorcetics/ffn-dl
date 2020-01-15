@@ -26,6 +26,15 @@ public protocol Site {
   ///
   /// Default implementation provided.
   static func convertToMainURL(_ url: URL) -> URL?
+
+  /// The finder allowing to build and/or update an `Author` from the site
+  static var authorFinder: Author.Finder { get }
+
+  /// The finder allowing to build and/or update a `Chapter` from the site
+  static var chapterFinder: Chapter.Finder { get }
+
+  /// The finder allowing to build and/or update a `Universe` from the site
+  static var universeFinder: Universe.Finder { get }
 }
 
 public extension Site {

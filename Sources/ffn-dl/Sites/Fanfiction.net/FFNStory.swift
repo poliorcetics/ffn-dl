@@ -67,77 +67,6 @@ public extension FFNStory {
       .replacingOccurrences(of: " - Words: .*", with: "", options: [.regularExpression])
       .replacingOccurrences(of: #" - Chapters: \d*"#, with: "", options: [.regularExpression])
   }
-
-  // MARK: - Finders
-
-  // Author
-
-  internal static let authorFinder = Author.Finder(
-    findURL: { doc in
-      guard let link = doc.body?.selectFirst(withCSSQuery: #"a[href^="/u/"]"#) else {
-        return nil
-      }
-      let urlString = link.attributeContent(withKey: "href")!
-      return URL(string: "https://www.fanfiction.net\(urlString)")
-    },
-    findName: { doc in doc.body?.selectFirst(withCSSQuery: #"a[href^="/u/"]"#)?.ownText }
-  )
-
-  // Chapter
-
-  internal static let chapterFinder = Chapter.Finder(
-    findURL: { doc in
-      guard let head = doc.head else {
-        return nil
-      }
-      return Self._site.findCanonicalUrl(in: head)
-    },
-    findTitle: { doc in
-      guard let body = doc.body else {
-        return nil
-      }
-      let currentChapter = body.selectFirst(withCSSQuery: "option[selected]")
-
-      return currentChapter?.ownText ?? (
-        // Fallback title
-        body.selectFirst(withCSSQuery: "b.xcontrast_txt")?.ownText ??
-        // Second fallback title, because chapters with no title is possible on FFN.net
-        ""
-      )
-    },
-    findContent: { doc in
-      let chapterContent = doc.body?.selectFirst(withCSSQuery: "div#storytext")
-      return chapterContent?.html
-    }
-  )
-
-  // Universe
-
-  private static func findSingleLink(in doc: Document) -> Component? {
-    doc.body?.selectFirst(withCSSQuery: "span.xcontrast_txt.icon-chevron-right.xicon-section-arrow+a")
-  }
-
-  private static func findCrossoverLink(in doc: Document) -> Component? {
-    doc.body?.selectFirst(withCSSQuery: #"img[align="absmiddle"]+a"#)
-  }
-
-  internal static let universeFinder = Universe.Finder(
-    findURL: { doc in
-      guard let link = findSingleLink(in: doc) ?? findCrossoverLink(in: doc)
-      else {
-        return nil
-      }
-      let urlString = link.attributeContent(withKey: "href")!
-      return URL(string: "https://www.fanfiction.net\(urlString)")
-    },
-    findName: { doc in
-      let link = findSingleLink(in: doc) ?? findCrossoverLink(in: doc)
-      return link?.ownText
-    },
-    findCrossover: { doc in
-      findCrossoverLink(in: doc) != nil
-    }
-  )
 }
 
 public extension FFNStory {
@@ -148,10 +77,10 @@ public extension FFNStory {
       let url = Self._site.findCanonicalUrl(in: head)?.makeChapterURL(for: 1),
       let body = doc.body,
       let title = findTitle(in: body),
-      let author = Author(from: doc, withFinder: Self.authorFinder),
+      let author = Author(from: doc, withFinder: Self.site.authorFinder),
       let summary = findSummary(in: body),
       let tokens = findTokens(in: body),
-      let universe = Universe(from: doc, withFinder: Self.universeFinder)
+      let universe = Universe(from: doc, withFinder: Self.site.universeFinder)
       else {
         return nil
     }
@@ -166,11 +95,11 @@ public extension FFNStory {
     if chapCount > 1 {
       chapters = (1...chapCount).compactMap { chapNum -> Chapter? in
         let chapUrl = url.makeChapterURL(for: chapNum)
-        return Chapter(from: chapUrl, withFinder: Self.chapterFinder)
+        return Chapter(from: chapUrl, withFinder: Self.site.chapterFinder)
       }
     // In the case where there's only one chapter, we've already downloaded it
     } else {
-      chapters = [Chapter(from: doc, withFinder: Self.chapterFinder)].compactMap { $0 }
+      chapters = [Chapter(from: doc, withFinder: Self.site.chapterFinder)].compactMap { $0 }
     }
 
     guard chapters.count == chapCount else {
@@ -280,7 +209,7 @@ public extension FFNStory {
 
   private mutating func updateNew(upTo chapter: Int) -> Story.UpdateResult {
     precondition(chapter > chapterCount)
-    return updateIncluding(from: self.chapters.count + 1, upTo: chapter)
+    return updateIncluding(from: chapters.count + 1, upTo: chapter)
   }
 
   private mutating func updateIncluding(from startChapter: Int, upTo endChapter: Int) -> Story.UpdateResult {
@@ -289,7 +218,7 @@ public extension FFNStory {
 
     for chapNum in newChaptersIndices {
       let chapUrl = url.makeChapterURL(for: chapNum)
-      if let newChapter = Chapter(from: chapUrl, withFinder: Self.chapterFinder) {
+      if let newChapter = Chapter(from: chapUrl, withFinder: Self.site.chapterFinder) {
         newChapters.append(newChapter)
       } else {
         return (.failure("Failed to download all chapters up to \(endChapter) (failed on \(chapNum))"), [])

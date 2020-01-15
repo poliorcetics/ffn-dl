@@ -16,9 +16,9 @@ final class FFNStoryTests: XCTestCase {
   static let trueURL = URL(string: "https://www.fanfiction.net/s/4951074/1")!
   static let title = "Harry's Little Army of Psychos"
   static let summary = "Oneshot from Ron’s POV. Ron tries to explain to the twins just how Harry made the Ministry of Magic make a new classification for magical creatures, and why the puffskeins were now considered the scariest magical creature of all time. No pairings."
-  static let chapter = Chapter(from: doc, withFinder: FFNStory.chapterFinder)!
-  static let author = Author(from: doc, withFinder: FFNStory.authorFinder)!
-  static let universe = Universe(from: doc, withFinder: FFNStory.universeFinder)!
+  static let chapter = Chapter(from: doc, withFinder: FFNStory.site.chapterFinder)!
+  static let author = Author(from: doc, withFinder: FFNStory.site.authorFinder)!
+  static let universe = Universe(from: doc, withFinder: FFNStory.site.universeFinder)!
   static let tokens = "Rated: Fiction T - English - Humor/Adventure - Ron W., Harry P. - Words: 4,308 - Reviews: 805 - Favs: 6,784 - Follows: 1,409 - Published: 3/27/2009 - Status: Complete - id: 4951074"
   static let shortTokens = "T - English - Humor/Adventure - Ron W., Harry P."
 
