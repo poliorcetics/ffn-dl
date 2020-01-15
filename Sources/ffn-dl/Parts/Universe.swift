@@ -31,7 +31,7 @@ public struct Universe {
   /// - *Star Wars* is **not** a crossover.
   public let isCrossover: Bool
 
-  internal init(url: URL, name: String, isCrossover: Bool) {
+  public init(url: URL, name: String, isCrossover: Bool) {
     self.url = url
     self.name = name
     self.isCrossover = isCrossover

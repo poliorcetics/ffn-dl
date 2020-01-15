@@ -18,7 +18,7 @@ public struct Author {
   /// Name of the author.
   public let name: String
 
-  internal init(url: URL, name: String) {
+  public init(url: URL, name: String) {
     self.url = url
     self.name = name
   }

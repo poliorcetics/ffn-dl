@@ -33,7 +33,7 @@ public struct Chapter {
   ///   - content: Content of the chapter.
   ///   - lastUpdate: When the chapter was last updated **by the programm**.
   ///   - finder: The `Chapter.Finder` to use when updating this chapter.
-  internal init(url: URL, title: String, content: String, lastUpdate: Date, finder: Chapter.Finder) {
+  public init(url: URL, title: String, content: String, lastUpdate: Date, finder: Chapter.Finder) {
     self.url = url
     self.title = title
     self.content = content
