@@ -84,8 +84,7 @@ public enum FFNSite: Site {
 
   public static let universeFinder = Universe.Finder(
     findURL: { doc in
-      guard let link = findSingleLink(in: doc) ?? findCrossoverLink(in: doc)
-        else {
+      guard let link = findSingleLink(in: doc) ?? findCrossoverLink(in: doc) else {
           return nil
       }
       let urlString = link.attributeContent(withKey: "href")!
