@@ -52,23 +52,6 @@ public protocol Story: CustomStringConvertible {
   ///
   /// Default implementation: equal to `self.token`.
   var shortTokens: String { get }
-  /// `true` if the story is complete.
-  ///
-  /// Default implementation: `self.status == .complete`.
-  var isComplete: Bool { get }
-  /// `true` if the story is a crossover.
-  ///
-  /// Default implementation: `self.universe.isCrossover`.
-  var isCrossover: Bool { get }
-
-  /// Last update of the oldest chapter.
-  ///
-  /// Default implementation: find the minimum of all update dates in `self.chapters`.
-  var oldestChapterUpdate: Date { get }
-  /// Most recent update of the oldest chapter.
-  ///
-  /// Default implementation: find the maximum of all update dates in `self.chapters`.
-  var newestChapterUpdate: Date { get }
 
   /// Indicates whether the story was updated or not, and, if it was, exactly which chapters were.
   typealias UpdateResult = (state: ffn_dl.UpdateResult, updatedChapters: [Int])
@@ -92,6 +75,38 @@ public protocol Story: CustomStringConvertible {
 }
 
 public extension Story {
+  // MARK: Non-overridable computed variables
+
+  /// `true` if the story is complete.
+  var isComplete: Bool {
+    status == .complete
+  }
+
+  /// `true` if the story is a crossover.
+  var isCrossover: Bool {
+    universe.isCrossover
+  }
+
+  /// Oldest update amongst the story's chapters.
+  ///
+  /// The update date is taken from the `.lastUpdate` member of the chapters.
+  var oldestChapterUpdate: Date {
+    let oldestChapter = chapters.min { $0.lastUpdate < $1.lastUpdate }
+    return oldestChapter!.lastUpdate
+  }
+
+  /// Most recent update amongst the story's chapters.
+  ///
+  /// The update date is taken from the `.lastUpdate` member of the chapters.
+  var newestChapterUpdate: Date {
+    let newestChapter = chapters.max { $0.lastUpdate < $1.lastUpdate }
+    return newestChapter!.lastUpdate
+  }
+}
+
+// MARK: - Default implementations
+
+public extension Story {
   // MARK: Computed variables
 
   var chapterCount: Int {
@@ -100,24 +115,6 @@ public extension Story {
 
   var shortTokens: String {
     tokens
-  }
-
-  var isComplete: Bool {
-    status == .complete
-  }
-
-  var isCrossover: Bool {
-    universe.isCrossover
-  }
-
-  var oldestChapterUpdate: Date {
-    let oldestChapter = chapters.min { $0.lastUpdate < $1.lastUpdate }
-    return oldestChapter!.lastUpdate
-  }
-
-  var newestChapterUpdate: Date {
-    let newestChapter = chapters.max { $0.lastUpdate < $1.lastUpdate }
-    return newestChapter!.lastUpdate
   }
 }
 
@@ -130,7 +127,7 @@ public extension Story {
 }
 
 public extension Story {
-  // MARK: - Init
+  // MARK: Init
 
   init?(from url: URL) {
     guard let doc = url.getDocument() else {
@@ -141,7 +138,7 @@ public extension Story {
 }
 
 extension Story {
-  // MARK: - CustomStringConvertible
+  // MARK: CustomStringConvertible
 
   public var description: String {
     let chaptersDesc = chapters
