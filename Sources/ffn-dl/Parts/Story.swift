@@ -104,6 +104,77 @@ public extension Story {
   }
 }
 
+// MARK: - StoryFinder
+
+/// A `StoryFinder` gathers the necessary methods to find all relevant informations about a story
+/// inside the given type `T`.
+///
+/// A `find*` closure should return `nil` on failure or when the property it finds is a computed one. The properties likely to be computed one have a default value of `{ _ in nil }`.
+public struct StoryFinder<T> {
+  /// Used to find the URL.
+  ///
+  /// Returns `nil` on failure.
+  public let findURL: (T) -> URL?
+
+  /// Used to find the title.
+  ///
+  /// Returns `nil` on failure.
+  public let findTitle: (T) -> String?
+  /// Used to find the summary.
+  ///
+  /// Returns `nil` on failure.
+  public let findSummary: (T) -> String?
+
+  /// Used to find the status.
+  ///
+  /// Returns `nil` on failure.
+  public let findStatus: (T) -> Status?
+  /// Used to find the language.
+  ///
+  /// Returns `nil` on failure.
+  public let findLanguage: (T) -> String?
+
+  /// Used to find the chapter count.
+  ///
+  /// Returns `nil` on failure.
+  public let findChapterCount: (T) -> Int?
+  /// Used to find the word count.
+  ///
+  /// Returns `nil` on failure.
+  public let findWordCount: (T) -> Int?
+
+  /// Used to find the tokens.
+  ///
+  /// Returns `nil` on failure.
+  public let findTokens: (T) -> String?
+  /// Used to find the shortened version of the tokens.
+  ///
+  /// Returns `nil` on failure.
+  public let findShortTokens: (T) -> String?
+
+  public init(
+    findURL: @escaping (T) -> URL?,
+    findTitle: @escaping (T) -> String?,
+    findSummary: @escaping (T) -> String?,
+    findStatus: @escaping (T) -> Status? = { _ in nil },
+    findLanguage: @escaping (T) -> String? = { _ in nil },
+    findChapterCount: @escaping (T) -> Int? = { _ in nil },
+    findWordCount: @escaping (T) -> Int? = { _ in nil },
+    findTokens: @escaping (T) -> String?,
+    findShortTokens: @escaping (T) -> String?  = { _ in nil }
+  ) {
+    self.findURL = findURL
+    self.findTitle = findTitle
+    self.findSummary = findSummary
+    self.findStatus = findStatus
+    self.findLanguage = findLanguage
+    self.findChapterCount = findChapterCount
+    self.findWordCount = findWordCount
+    self.findTokens = findTokens
+    self.findShortTokens = findShortTokens
+  }
+}
+
 // MARK: - Default implementations
 
 public extension Story {
