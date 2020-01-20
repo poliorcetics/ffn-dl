@@ -72,6 +72,21 @@ public protocol Story: CustomStringConvertible {
   /// - Parameters:
   ///   - doc: `Document` to use to get the chapter.
   init?(from doc: Document)
+
+  /// Attempts to initialize a full from a given `T`.
+  /// - Parameters:
+  ///   - content: The content in which to find the data.
+  ///   - finder: The finder to use on the content.
+  ///   - chapters: The chapters related to the story.
+  ///   - author: The story's author.
+  ///   - universe: The story's author.
+  init?<T>(
+    from content: T,
+    withFinder finder: StoryFinder<T>,
+    chapters: [Chapter],
+    author: Author,
+    universe: Universe
+  )
 }
 
 public extension Story {

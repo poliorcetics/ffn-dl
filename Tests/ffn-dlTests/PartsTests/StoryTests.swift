@@ -97,6 +97,17 @@ fileprivate struct MockStory: Story {
     nil
   }
 
+  // Always failing, the parsing of a content is not the point here
+  init?<T>(
+    from content: T,
+    withFinder finder: StoryFinder<T>,
+    chapters: [Chapter],
+    author: Author,
+    universe: Universe
+  ) {
+    nil
+  }
+
   // For successful init
   init() {}
 

@@ -25,7 +25,7 @@ public struct FFNStory: Story, Hashable {
 
   public private(set) var tokens: String
 
-  public init(url: URL, title: String, summary: String, chapters: [Chapter],
+  internal init(url: URL, title: String, summary: String, chapters: [Chapter],
               author: Author, universe: Universe, tokens: String) {
     precondition(!chapters.isEmpty)
 
@@ -106,6 +106,24 @@ public extension FFNStory {
       return nil
     }
 
+    self.init(url: url, title: title, summary: summary, chapters: chapters,
+              author: author, universe: universe, tokens: tokens)
+  }
+
+  init?<T>(
+    from content: T,
+    withFinder finder: StoryFinder<T>,
+    chapters: [Chapter],
+    author: Author,
+    universe: Universe
+  ) {
+    guard let url = finder.findURL(content),
+      let title = finder.findTitle(content),
+      let summary = finder.findSummary(content),
+      let tokens = finder.findTokens(content)
+      else {
+        return nil
+    }
     self.init(url: url, title: title, summary: summary, chapters: chapters,
               author: author, universe: universe, tokens: tokens)
   }

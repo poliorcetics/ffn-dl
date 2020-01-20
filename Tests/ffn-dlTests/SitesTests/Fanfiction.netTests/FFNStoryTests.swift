@@ -36,6 +36,68 @@ final class FFNStoryTests: XCTestCase {
     testLocalSingleChapterStory(story)
   }
 
+  func testWithFinderInitReturnsNilWhenFinderFailsOnURL() {
+    let finder = StoryFinder<String>(
+      findURL: { _ in nil },
+      findTitle: { _ in Self.title },
+      findSummary: { _ in Self.summary },
+      findTokens: { _ in Self.tokens }
+    )
+
+    let story = FFNStory(from: "", withFinder: finder, chapters: [Self.chapter], author: Self.author, universe: Self.universe)
+    XCTAssertNil(story)
+  }
+
+  func testWithFinderInitReturnsNilWhenFinderFailsOnTitle() {
+    let finder = StoryFinder<String>(
+      findURL: { _ in Self.trueURL },
+      findTitle: { _ in nil },
+      findSummary: { _ in Self.summary },
+      findTokens: { _ in Self.tokens }
+    )
+
+    let story = FFNStory(from: "", withFinder: finder, chapters: [Self.chapter], author: Self.author, universe: Self.universe)
+    XCTAssertNil(story)
+  }
+
+  func testWithFinderInitReturnsNilWhenFinderFailsOnSummary() {
+    let finder = StoryFinder<String>(
+      findURL: { _ in Self.trueURL },
+      findTitle: { _ in Self.title },
+      findSummary: { _ in nil },
+      findTokens: { _ in Self.tokens }
+    )
+
+    let story = FFNStory(from: "", withFinder: finder, chapters: [Self.chapter], author: Self.author, universe: Self.universe)
+    XCTAssertNil(story)
+  }
+
+  func testWithFinderInitReturnsNilWhenFinderFailsOnTokens() {
+    let finder = StoryFinder<String>(
+      findURL: { _ in Self.trueURL },
+      findTitle: { _ in Self.title },
+      findSummary: { _ in Self.summary },
+      findTokens: { _ in nil }
+    )
+
+    let story = FFNStory(from: "", withFinder: finder, chapters: [Self.chapter], author: Self.author, universe: Self.universe)
+    XCTAssertNil(story)
+  }
+
+  func testWithFinderInitReturnsCorrectlyWhenFinderSucceeds() {
+    let finder = StoryFinder<String>(
+      findURL: { _ in Self.trueURL },
+      findTitle: { _ in Self.title },
+      findSummary: { _ in Self.summary },
+      findTokens: { _ in Self.tokens }
+    )
+
+    let story = FFNStory(from: "", withFinder: finder, chapters: [Self.chapter], author: Self.author, universe: Self.universe)!
+    testLocalSingleChapterStory(story,
+                                testingChapters: false,
+                                testingUpdates: false)
+  }
+
   func testValidLocalURLForSingleChapteredFicSingleUniverse() {
     let story = FFNStory(from: Self.localURL)!
 
