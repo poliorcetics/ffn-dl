@@ -63,12 +63,12 @@ public protocol Story: CustomStringConvertible {
   /// Chapters are indexed starting at one here.
   mutating func update(chapters: [Int]) -> Story.UpdateResult
 
-  /// Attempts to initialize a full story fro a given `URL`.
+  /// Attempts to initialize a full story from a given `URL`.
   /// - Parameters:
   ///   - url: `URL` to use to get the chapter.
   init?(from url: URL)
 
-  /// Attempts to initialize a full story fro a given `Document`.
+  /// Attempts to initialize a full story from a given `Document`.
   /// - Parameters:
   ///   - doc: `Document` to use to get the chapter.
   init?(from doc: Document)
