@@ -27,7 +27,7 @@ public struct Author {
 public extension Author {
   // MARK: - Author.Finder
 
-  /// A `Author.Finder` gathers the necessary method to find all relevant informations about the author inside a document.
+  /// A `Author.Finder` gathers the necessary methods to find all relevant informations about the author inside a document.
   ///
   /// The given `Document` can be anything the user whish it to be as long as it allows
   /// getting the author from it.

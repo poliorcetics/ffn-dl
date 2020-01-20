@@ -45,7 +45,7 @@ public struct Chapter {
 public extension Chapter {
   // MARK: - Chapter.Finder
 
-  /// A `Chapter.Finder` gathers the necessary method to find all relevant informations about chapter inside a document.
+  /// A `Chapter.Finder` gathers the necessary methods to find all relevant informations about chapter inside a document.
   ///
   /// The given `Document` can be anything the user whish it to be as long as it allows
   /// getting the chapter from it.

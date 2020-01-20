@@ -41,7 +41,7 @@ public struct Universe {
 public extension Universe {
   // MARK: - Universe.Finder
 
-  /// A `Universe.Finder` gathers the necessary method to find all relevant informations about the universe inside a document.
+  /// A `Universe.Finder` gathers the necessary methods to find all relevant informations about the universe inside a document.
   ///
   /// The given `Document` can be anything the user whish it to be as long as it allows
   /// getting the universe from it.
